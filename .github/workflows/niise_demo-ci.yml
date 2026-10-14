@@ -9,14 +9,14 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    # Setting environment variables at the job level fixes Node.js SSL issues for ALL steps
+    env:
+      GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY: "1"
+      NODE_OPTIONS: "--use-system-ca"
 
     steps:
       - name: Sync Git Code Repo
         shell: cmd
-        env:
-            GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY: "1"
-            # NODE_TLS_REJECT_UNAUTHORIZED: "0"
-            NODE_OPTIONS: "--use-system-ca"
         run: |
           cd /d "C:\RajWork\2026\JIM\springboot-series\niise-demo"
           if not exist .git (
@@ -48,6 +48,10 @@ jobs:
           if not exist "C:\niise-deployment" (
               mkdir "C:\niise-deployment"
           )
+          
+          echo Stopping any previously running instances to prevent file lock...
+          wmic process where "CommandLine like '%niise-deployment%'" call terminate 2>nul
+          
           echo Copying production artifact...
           copy /Y "C:\RajWork\2026\JIM\springboot-series\niise-demo\target\*.jar" "C:\niise-deployment\"
 

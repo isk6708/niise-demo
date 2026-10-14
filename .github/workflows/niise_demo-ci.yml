@@ -15,7 +15,8 @@ jobs:
         shell: cmd
         env:
             GITHUB_ACTIONS_RUNNER_TLS_NO_VERIFY: "1"
-            NODE_TLS_REJECT_UNAUTHORIZED: "0"
+            # NODE_TLS_REJECT_UNAUTHORIZED: "0"
+            NODE_OPTIONS: "--use-system-ca"
         run: |
           cd /d "C:\RajWork\2026\JIM\springboot-series\niise-demo"
           if not exist .git (
